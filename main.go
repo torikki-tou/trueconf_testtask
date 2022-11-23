@@ -29,7 +29,7 @@ type (
 )
 
 var (
-	UserNotFound = errors.New("user_not_found")
+	ErrUserNotFound = errors.New("user_not_found")
 )
 
 func main() {
@@ -140,7 +140,7 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	if _, ok := s.List[id]; !ok {
-		_ = render.Render(w, r, ErrInvalidRequest(UserNotFound))
+		_ = render.Render(w, r, ErrInvalidRequest(ErrUserNotFound))
 		return
 	}
 
@@ -162,7 +162,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	if _, ok := s.List[id]; !ok {
-		_ = render.Render(w, r, ErrInvalidRequest(UserNotFound))
+		_ = render.Render(w, r, ErrInvalidRequest(ErrUserNotFound))
 		return
 	}
 
