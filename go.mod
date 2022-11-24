@@ -1,4 +1,4 @@
-module refactoring
+module github.com/torikki-tou/trueconf_testtask
 
 go 1.19
 
