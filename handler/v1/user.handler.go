@@ -1,10 +1,12 @@
 package v1
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/torikki-tou/trueconf_testtask/common/custom_error"
 	"github.com/torikki-tou/trueconf_testtask/common/response"
 	"github.com/torikki-tou/trueconf_testtask/dto"
 	"github.com/torikki-tou/trueconf_testtask/service"
@@ -37,24 +39,24 @@ func (h *userHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.userService.CreateUser(request)
+	user_id, err := h.userService.CreateUser(request)
 	if err != nil {
 		render.Render(w, r, response.ErrIternal(err))
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.JSON(w, r, user)
+	render.JSON(w, r, map[string]interface{}{"user_id": user_id})
 }
 
 func (h *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	user, err := h.userService.GetUsers()
+	users, err := h.userService.GetUsers()
 	if err != nil {
 		render.Render(w, r, response.ErrIternal(err))
 		return
 	}
 
-	render.JSON(w, r, user)
+	render.JSON(w, r, users)
 }
 
 func (h *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +64,11 @@ func (h *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 	user, err := h.userService.GetUserByID(userID)
 	if err != nil {
-		render.Render(w, r, response.ErrIternal(err))
+		if errors.Is(err, &custom_error.ErrObjectNotFound{}){
+			render.Render(w, r, response.ErrNotFound(err))
+		} else {
+			render.Render(w, r, response.ErrIternal(err))
+		}
 		return
 	}
 
@@ -81,7 +87,11 @@ func (h *userHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	err := h.userService.UpdateUser(userID, request)
 	if err != nil {
-		render.Render(w, r, response.ErrIternal(err))
+		if errors.Is(err, &custom_error.ErrObjectNotFound{}){
+			render.Render(w, r, response.ErrNotFound(err))
+		} else {
+			render.Render(w, r, response.ErrIternal(err))
+		}
 		return
 	}
 
@@ -93,7 +103,11 @@ func (h *userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	err := h.userService.DeleteUser(userID)
 	if err != nil {
-		render.Render(w, r, response.ErrIternal(err))
+		if errors.Is(err, &custom_error.ErrObjectNotFound{}){
+			render.Render(w, r, response.ErrNotFound(err))
+		} else {
+			render.Render(w, r, response.ErrIternal(err))
+		}
 		return
 	}
 
