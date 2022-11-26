@@ -1,3 +1,3 @@
 package config
 
-const Filename = "users1.json"
+const Filename = "users.json"
