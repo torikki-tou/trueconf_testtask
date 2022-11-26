@@ -38,3 +38,11 @@ func ErrIternal(err error) render.Renderer {
 		StatusText: "Iternal error",
 	}
 }
+
+func ErrNotFound(err error) render.Renderer {
+	return &ErrResponse{
+		Err: err,
+		HTTPStatusCode: 404,
+		StatusText: "Object not found",
+	}
+}
