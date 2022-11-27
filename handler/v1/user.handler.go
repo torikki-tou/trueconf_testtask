@@ -39,14 +39,14 @@ func (h *userHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user_id, err := h.userService.CreateUser(request)
+	userID, err := h.userService.CreateUser(request)
 	if err != nil {
 		render.Render(w, r, response.ErrIternal(err))
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.JSON(w, r, map[string]interface{}{"user_id": user_id})
+	render.JSON(w, r, map[string]interface{}{"user_id": userID})
 }
 
 func (h *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
