@@ -6,18 +6,24 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/torikki-tou/trueconf_testtask/config"
 	handlerV1 "github.com/torikki-tou/trueconf_testtask/handler/v1"
 	"github.com/torikki-tou/trueconf_testtask/repo"
 	"github.com/torikki-tou/trueconf_testtask/service"
 )
 var (
+	queueCon	*amqp.Connection		= config.SetupRabbitMQConnection()
+	queueRepo	repo.QueueRepository	= repo.NewQueueRepository(queueCon)
 	userRepo 	repo.UserRepositiry 	= repo.NewUserRepository(config.Filename)
 	userService service.UserService 	= service.NewUserService(userRepo)
 	userHandler handlerV1.UserHandler 	= handlerV1.NewUserHandler(userService)
 )
 
 func main() {
+	defer config.CloseRabbitMQConnection(queueCon)
+
+	config.InitQueue(queueCon)
 
 	r := chi.NewRouter()
 

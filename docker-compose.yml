@@ -10,3 +10,14 @@ services:
       - '8000:3333'
     volumes:
       - ./store:/store
+
+  queue:
+    image: rabbitmq:management
+    hostname: rabbit
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+    ports:
+      - '15672:15672'
+
+volumes:
+  rabbitmq:
