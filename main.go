@@ -14,7 +14,7 @@ import (
 )
 var (
 	queueCon	*amqp.Connection		= config.SetupRabbitMQConnection()
-	queueRepo	repo.QueueRepository	= repo.NewQueueRepository(queueCon)
+	rabbitRepo	repo.RabbitRepository	= repo.NewRabbitRepository(queueCon)
 	userRepo 	repo.UserRepository 	= repo.NewUserRepository(config.Filename)
 	userService service.UserService 	= service.NewUserService(userRepo)
 	userHandler handlerV1.UserHandler 	= handlerV1.NewUserHandler(userService)
