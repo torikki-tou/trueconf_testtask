@@ -11,7 +11,7 @@ import (
 	"github.com/torikki-tou/trueconf_testtask/common/custom_error"
 )
 
-type UserRepositiry interface {
+type UserRepository interface {
 	GetUsers() (entity.UserList, error)
 	GetUserByID(userID string) (entity.User, error) 
 	InsertUser(new_obj entity.User) (int, error)
@@ -19,17 +19,17 @@ type UserRepositiry interface {
 	DeleteUser(userID string) error
 }
 
-func NewUserRepository(filename string) UserRepositiry {
-	return &userRepositiry{
+func NewUserRepository(filename string) UserRepository {
+	return &userRepository{
 		filename: filename,
 	}
 }
 
-type userRepositiry struct {
+type userRepository struct {
 	filename string
 }
 
-func (r *userRepositiry) getUserStore() (*entity.UserStore, error) {
+func (r *userRepository) getUserStore() (*entity.UserStore, error) {
 	f, err := os.ReadFile(config.Filename)
 	if err != nil {
 		return nil, err
@@ -40,12 +40,12 @@ func (r *userRepositiry) getUserStore() (*entity.UserStore, error) {
 	return &s, nil
 }
 
-func (r *userRepositiry) commit(store *entity.UserStore) {
+func (r *userRepository) commit(store *entity.UserStore) {
 	b, _ := json.MarshalIndent(store, "", " ")
 	_ = os.WriteFile(config.Filename, b, fs.ModePerm)
 }
 
-func (r *userRepositiry) GetUsers() (entity.UserList, error) {
+func (r *userRepository) GetUsers() (entity.UserList, error) {
 	store, err := r.getUserStore()
 	if err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (r *userRepositiry) GetUsers() (entity.UserList, error) {
 	return store.List, nil
 }
 
-func (r *userRepositiry) GetUserByID(userID string) (entity.User, error) {
+func (r *userRepository) GetUserByID(userID string) (entity.User, error) {
 	store, err := r.getUserStore()
 	if err != nil {
 		return entity.User{}, err
@@ -68,7 +68,7 @@ func (r *userRepositiry) GetUserByID(userID string) (entity.User, error) {
 	return user, nil
 }
 
-func (r *userRepositiry) InsertUser(new_obj entity.User) (int, error) {
+func (r *userRepository) InsertUser(new_obj entity.User) (int, error) {
 	store, err := r.getUserStore()
 	if err != nil {
 		return 0, err
@@ -84,7 +84,7 @@ func (r *userRepositiry) InsertUser(new_obj entity.User) (int, error) {
 	return store.Increment, nil
 }
 
-func (r *userRepositiry) UpdateUser(userID string, new_obj entity.User) error {
+func (r *userRepository) UpdateUser(userID string, new_obj entity.User) error {
 	store, err := r.getUserStore()
 	if err != nil {
 		return err
@@ -100,7 +100,7 @@ func (r *userRepositiry) UpdateUser(userID string, new_obj entity.User) error {
 	return nil
 }
 
-func (r *userRepositiry) DeleteUser(userID string) error {
+func (r *userRepository) DeleteUser(userID string) error {
 	store, err := r.getUserStore()
 	if err != nil {
 		return err

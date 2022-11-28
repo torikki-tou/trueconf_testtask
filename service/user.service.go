@@ -16,14 +16,14 @@ type UserService interface {
 	DeleteUser(userID string) error
 }
 
-func NewUserService(userRepo repo.UserRepositiry) UserService {
+func NewUserService(userRepo repo.UserRepository) UserService {
 	return &userService{
 		userRepo: userRepo,
 	}
 }
 
 type userService struct {
-	userRepo repo.UserRepositiry
+	userRepo repo.UserRepository
 }
 
 func (s *userService) CreateUser(request dto.CreateUserRequest) (int, error) {
