@@ -41,7 +41,7 @@ func (h *userHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := h.userService.CreateUser(request)
 	if err != nil {
-		render.Render(w, r, response.ErrIternal(err))
+		render.Render(w, r, response.ErrInternal(err))
 		return
 	}
 
@@ -52,7 +52,7 @@ func (h *userHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 func (h *userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := h.userService.GetUsers()
 	if err != nil {
-		render.Render(w, r, response.ErrIternal(err))
+		render.Render(w, r, response.ErrInternal(err))
 		return
 	}
 
@@ -67,7 +67,7 @@ func (h *userHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 		if errors.Is(err, &custom_error.ErrObjectNotFound{}){
 			render.Render(w, r, response.ErrNotFound(err))
 		} else {
-			render.Render(w, r, response.ErrIternal(err))
+			render.Render(w, r, response.ErrInternal(err))
 		}
 		return
 	}
@@ -90,7 +90,7 @@ func (h *userHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		if errors.Is(err, &custom_error.ErrObjectNotFound{}){
 			render.Render(w, r, response.ErrNotFound(err))
 		} else {
-			render.Render(w, r, response.ErrIternal(err))
+			render.Render(w, r, response.ErrInternal(err))
 		}
 		return
 	}
@@ -106,7 +106,7 @@ func (h *userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		if errors.Is(err, &custom_error.ErrObjectNotFound{}){
 			render.Render(w, r, response.ErrNotFound(err))
 		} else {
-			render.Render(w, r, response.ErrIternal(err))
+			render.Render(w, r, response.ErrInternal(err))
 		}
 		return
 	}

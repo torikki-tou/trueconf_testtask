@@ -31,11 +31,11 @@ func ErrInvalidRequest(err error) render.Renderer {
 	}
 }
 
-func ErrIternal(err error) render.Renderer {
+func ErrInternal(err error) render.Renderer {
 	return &ErrResponse{
 		Err: err,
 		HTTPStatusCode: 500,
-		StatusText: "Iternal error",
+		StatusText: "Internal error",
 	}
 }
 
