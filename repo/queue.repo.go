@@ -11,7 +11,7 @@ import (
 )
 
 type RabbitRepository interface {
-	produceMessage(notification dto.Notification) error
+	ProduceMessage(notification dto.Notification) error
 }
 
 type rabbitRepository struct {
@@ -22,7 +22,7 @@ func NewRabbitRepository(connection *amqp.Connection) RabbitRepository {
 	return &rabbitRepository{connection: connection}
 }
 
-func (r *rabbitRepository) produceMessage(notification dto.Notification) error {
+func (r *rabbitRepository) ProduceMessage(notification dto.Notification) error {
 	ch, err := r.connection.Channel()
 	if err != nil {
 		return err
