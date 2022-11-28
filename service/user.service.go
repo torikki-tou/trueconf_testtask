@@ -1,6 +1,7 @@
 package service
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/torikki-tou/trueconf_testtask/dto"
@@ -16,14 +17,16 @@ type UserService interface {
 	DeleteUser(userID string) error
 }
 
-func NewUserService(userRepo repo.UserRepository) UserService {
+func NewUserService(userRepo repo.UserRepository, queueRepo repo.RabbitRepository) UserService {
 	return &userService{
 		userRepo: userRepo,
+		queueRepo: queueRepo,
 	}
 }
 
 type userService struct {
 	userRepo repo.UserRepository
+	queueRepo repo.RabbitRepository
 }
 
 func (s *userService) CreateUser(request dto.CreateUserRequest) (int, error) {
@@ -34,6 +37,14 @@ func (s *userService) CreateUser(request dto.CreateUserRequest) (int, error) {
 	}
 
 	userID, err := s.userRepo.InsertUser(user)
+	if err != nil {
+		return 0, err
+	}
+
+	err = s.queueRepo.ProduceMessage(dto.Notification{
+		Type: "user_created",
+		UserID: userID,
+	})
 	if err != nil {
 		return 0, err
 	}
@@ -70,6 +81,15 @@ func (s *userService) UpdateUser(userID string, request dto.UpdateUserRequest) e
 		return err
 	}
 
+	intID, _ := strconv.Atoi(userID)
+	err = s.queueRepo.ProduceMessage(dto.Notification{
+		Type: "user_updated",
+		UserID: intID,
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -78,5 +98,15 @@ func (s *userService) DeleteUser(userID string) error {
 	if err != nil {
 		return err
 	}
+
+	intID, _ := strconv.Atoi(userID)
+	err = s.queueRepo.ProduceMessage(dto.Notification{
+		Type: "user_deleted",
+		UserID: intID,
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
